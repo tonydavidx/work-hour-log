@@ -2,6 +2,7 @@ import requests
 import os
 import datetime
 from datetime import date
+from inputimeout import inputimeout, TimeoutOccurred
 
 today = date.today()
 
@@ -33,8 +34,26 @@ print(hours_minutes)
 
 with open('./data.csv', 'a') as f:
     f.write(f'{today},{hours_minutes}\n')
+# user_input = input(
+#     'Do you want to commit today (Y/N)\nignore or press Y to commit\npress N to stop script')
+# # wait few seconds for input
 
-os.system('git add .')
-os.system(f'git commit -m "start"')
-# os.system(f'git commit -m "Added workhours for {today} to data.csv"')
-os.system('git push -u origin main')
+
+def commit():
+    os.system('git add .')
+    # os.system(f'git commit -m "start"')
+    os.system(f'git commit -m "Added workhours for {today} to data.csv"')
+    os.system('git push')
+    print('done')
+
+
+try:
+    user_input = inputimeout('want to commit (Y/N)', timeout=5)
+    if user_input.lower() == 'y':
+        commit()
+    if user_input.lower() == 'n':
+        print('no commits today')
+
+except TimeoutOccurred:
+    print('timeout')
+    commit()
