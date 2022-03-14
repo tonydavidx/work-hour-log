@@ -5,8 +5,9 @@ import os
 import datetime
 from datetime import date, timedelta
 from inputimeout import inputimeout, TimeoutOccurred
+from date_process import DateProcess
 
-LAST_RUN = None
+LAST_RUN = DateProcess().get_last_run_date()
 
 endpoint = 'https://reports.api.clockify.me/v1'
 workspace_id = '5e2a8dc28a512816cfa01c0d'
