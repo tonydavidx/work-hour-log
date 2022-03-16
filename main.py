@@ -67,4 +67,4 @@ except TimeoutOccurred:
     print('timeout occured going to commit')
     commit()
 
-time.sleep(10)
+sleep(10)
