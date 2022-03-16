@@ -1,3 +1,4 @@
+import random
 from time import sleep, time
 from types import NoneType
 import requests
@@ -18,41 +19,41 @@ if LAST_RUN is None:
 else:
     day = LAST_RUN
 
-# for i in range(3):
-day = day + timedelta(days=1)
-filters = {
-    "dateRangeStart": f"{day}T00:00:00.000Z",
-    "dateRangeEnd": f"{day}T23:59:59.999Z",
-    "summaryFilter": {
-        "groups": ["USER"],
+for i in range(1):
+    day = day + timedelta(days=1)
+    filters = {
+        "dateRangeStart": f"{day}T00:00:00.000Z",
+        "dateRangeEnd": f"{day}T23:59:59.999Z",
+        "summaryFilter": {
+            "groups": ["USER"],
+        }
     }
-}
 
-report = requests.post(f'{endpoint}/workspaces/{workspace_id}/reports/summary',
-                       json=filters, headers={'X-Api-Key': key}).json()
-print(report)
-try:
-    worked_seconds = datetime.timedelta(
-        seconds=report['totals'][0]['totalTime'])
+    report = requests.post(f'{endpoint}/workspaces/{workspace_id}/reports/summary',
+                           json=filters, headers={'X-Api-Key': key}).json()
+    print(report)
+    try:
+        worked_seconds = datetime.timedelta(
+            seconds=report['totals'][0]['totalTime'])
 
-except Exception:
-    worked_seconds = datetime.timedelta(seconds=0)
+    except Exception:
+        worked_seconds = datetime.timedelta(seconds=0)
 
-hours_minutes = str(worked_seconds).split(':')
-hours_minutes = hours_minutes[0] + '.' + hours_minutes[1]
-print(hours_minutes)
-str_date = day.strftime('%d-%m-%Y')
-with open('./data.csv', 'a') as f:
-    f.write(f'{str_date},{hours_minutes}\n')
+    hours_minutes = str(worked_seconds).split(':')
+    hours_minutes = hours_minutes[0] + '.' + hours_minutes[1]
+    print(hours_minutes)
+    str_date = day.strftime('%d-%m-%Y')
+    with open('./data.csv', 'a') as f:
+        f.write(f'{str_date},{hours_minutes}\n')
 
-sleep(1)
+    sleep(random.randint(1, 3))
 
-
-def commit():
-    os.system('git add .')
-    os.system(f'git commit -m "Added workhours for {str_date} to data.csv"')
-    os.system('git push -f')
-    print('done')
+    def commit():
+        os.system('git add .')
+        os.system(
+            f'git commit -m "Added workhours for {str_date} to data.csv"')
+        os.system('git push -f')
+        print('done')
 
 
 try:
@@ -63,5 +64,7 @@ try:
         print('no commits today')
 
 except TimeoutOccurred:
-    print('timeout')
+    print('timeout occured going to commit')
     commit()
+
+time.sleep(5)
