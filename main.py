@@ -1,6 +1,6 @@
 import random
 from time import sleep, time
-from types import NoneType
+from pandas import read_csv
 import requests
 import os
 import datetime
@@ -8,18 +8,29 @@ from datetime import date, timedelta
 from inputimeout import inputimeout, TimeoutOccurred
 from date_process import DateProcess
 
-LAST_RUN = DateProcess().get_last_run_date()
+date_process = DateProcess()
 
+
+def deb():
+    print('debug')
+    sleep(3)
+
+
+os.chdir('D:\Documents\python\mini-projects\workhourlog')
+
+LAST_RUN = date_process.get_last_run_date()
+date_process.get_today_date()
 endpoint = 'https://reports.api.clockify.me/v1'
 workspace_id = '5e2a8dc28a512816cfa01c0d'
 key = os.getenv('CLOCKIFY_KEY')
+days_not_recorded = date_process.get_range_value()
 
 if LAST_RUN is None:
     day = datetime.date(2021, 12, 31)
 else:
     day = LAST_RUN
 
-for i in range(1):
+for i in range(days_not_recorded):
     day = day + timedelta(days=1)
     filters = {
         "dateRangeStart": f"{day}T00:00:00.000Z",
@@ -31,7 +42,6 @@ for i in range(1):
 
     report = requests.post(f'{endpoint}/workspaces/{workspace_id}/reports/summary',
                            json=filters, headers={'X-Api-Key': key}).json()
-    print(report)
     try:
         worked_seconds = datetime.timedelta(
             seconds=report['totals'][0]['totalTime'])
@@ -41,7 +51,7 @@ for i in range(1):
 
     hours_minutes = str(worked_seconds).split(':')
     hours_minutes = hours_minutes[0] + '.' + hours_minutes[1]
-    print(hours_minutes)
+    print(f"{day} - {hours_minutes}")
     str_date = day.strftime('%d-%m-%Y')
     with open('./data.csv', 'a') as f:
         f.write(f'{str_date},{hours_minutes}\n')
@@ -66,5 +76,3 @@ try:
 except TimeoutOccurred:
     print('timeout occured going to commit')
     commit()
-
-sleep(10)
