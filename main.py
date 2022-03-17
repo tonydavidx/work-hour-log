@@ -10,12 +10,6 @@ from date_process import DateProcess
 
 date_process = DateProcess()
 
-
-def deb():
-    print('debug')
-    sleep(3)
-
-
 os.chdir('D:\Documents\python\mini-projects\workhourlog')
 
 LAST_RUN = date_process.get_last_run_date()
@@ -58,12 +52,13 @@ for i in range(days_not_recorded):
 
     sleep(random.randint(1, 3))
 
-    def commit():
-        os.system('git add .')
-        os.system(
-            f'git commit -m "Added workhours for {str_date} to data.csv"')
-        os.system('git push -f')
-        print('done')
+
+def commit():
+    os.system('git add .')
+    os.system(
+        f'git commit -m "Added workhours for {str_date} to data.csv"')
+    os.system('git push -f')
+    print('done')
 
 
 try:
@@ -76,3 +71,5 @@ try:
 except TimeoutOccurred:
     print('timeout occured going to commit')
     commit()
+
+sleep(5)
