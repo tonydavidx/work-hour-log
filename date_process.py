@@ -7,7 +7,7 @@ class DateProcess:
         pass
 
     def get_last_run_date(self):
-        data = read_csv('./data.csv')
+        data = read_csv('D:/Documents/python/mini-projects/workhourlog/data.csv')
         date = data['date'].iloc[-1]
         date = date.split('-')
         day = datetime.date(int(date[2]), int(date[1]), int(date[0]))
