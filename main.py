@@ -25,7 +25,7 @@ if LAST_RUN is None:
 else:
     day = LAST_RUN
 
-for i in range(days_not_recorded):
+for i in range(3):
     day = day + timedelta(days=1)
     filters = {
         "dateRangeStart": f"{day}T00:00:00.000Z",
@@ -51,7 +51,7 @@ for i in range(days_not_recorded):
     print(f"{day} - {hours_minutes}")
     str_date = day.strftime("%d-%m-%Y")
     with open("D:\Documents\python\mini-projects\workhourlog\data.csv", "a") as f:
-        f.write(f"{str_date},{hours_minutes}")
+        f.write(f"{str_date},{hours_minutes}\n")
 
     sleep(random.randint(1, 3))
 
